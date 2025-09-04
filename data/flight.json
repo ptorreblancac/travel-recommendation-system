@@ -1,0 +1,7 @@
+[
+    {"code": "IB101", "company": "Iberia", "date": "2026-06-23", "duration": 2.0, "origin": "Madrid", "destination": "Barcelona", "price": 120.0, "available": true},
+    {"code": "LH202", "company": "Lufthansa", "date": "2026-06-25", "duration": 3.5, "origin": "Berlin", "destination": "London", "price": 200.0, "available": true},
+    {"code": "AZ303", "company": "Alitalia", "date": "2026-06-27", "duration": 1.5, "origin": "Rome", "destination": "Milan", "price": 90.0, "available": true},
+    {"code": "RY404", "company": "Ryanair", "date": "2026-07-01", "duration": 4.0, "origin": "Dublin", "destination": "Amsterdam", "price": 150.0, "available": true},
+    {"code": "BA505", "company": "British Airways", "date": "2026-07-03", "duration": 2.5, "origin": "London", "destination": "Copenhagen", "price": 180.0, "available": true}
+]

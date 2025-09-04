@@ -1,0 +1,9 @@
+[
+    {"name": "Grand Hotel Barcelona", "type": "Hotel", "price": 150.0, "rating": 4.5, "location": "Barcelona", "availability": true},
+    {"name": "Rome City Hostel", "type": "Hostel", "price": 40.0, "rating": 4.0, "location": "Rome", "availability": true},
+    {"name": "Milan Airbnb Loft", "type": "Airbnb", "price": 100.0, "rating": 4.7, "location": "Milan", "availability": true},
+    {"name": "Berlin Central Hotel", "type": "Hotel", "price": 120.0, "rating": 4.3, "location": "Berlin", "availability": true},
+    {"name": "Copenhagen Cozy Apartment", "type": "Airbnb", "price": 90.0, "rating": 4.6, "location": "Copenhagen", "availability": true},
+    {"name": "H10 Itaca", "type": "Hotel", "price": 120.0, "rating": 4.9, "location": "Barcelona", "availability": true},
+    {"name": "Hotel ARS", "type": "Hotel", "price": 250.0, "rating": 4.9, "location": "Barcelona", "availability": false}
+]

@@ -1,0 +1,7 @@
+[
+    {"name": "Barcelona","temperature": 31,"country": "Spain"},
+    {"name": "Madrid","temperature": 33,"country": "Spain"},
+    {"name": "Milan","temperature": 27,"country": "Italy"},
+    {"name": "Berlin","temperature": 22,"country": "Germany"},
+    {"name": "Copenhaguen","temperature": 18,"country": "Denmark"} 
+]

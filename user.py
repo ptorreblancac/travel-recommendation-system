@@ -14,6 +14,7 @@ class User:
             self.booked_flights.append(flight)
             self.budget -= flight_price
             print(f"{self.name} booked flight {flight.code} to {flight.destination} successfully!\n")
+            print(f"The remaining budget is {self.budget}\n")
             return True
         else:
             print(f"{self.name} cannot currently book flight {flight.code}\n")
@@ -34,7 +35,7 @@ class User:
     
     def book_accommodation(self,accommodation):
         accommodation_price = accommodation.get_price()
-        if accommodation_price <= self.budget and accommodation.is_available():
+        if accommodation_price <= self.budget:
             self.booked_accommodations.append(accommodation)
             self.budget -= accommodation_price
             print(f"{self.name} has booked the accommodation {accommodation.name} successfully!")

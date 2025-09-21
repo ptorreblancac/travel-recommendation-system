@@ -1,5 +1,5 @@
 class Flight:
-    def __init__(self,code,company,date,duration,origin,destination,price,available=True):
+    def __init__(self,code,company,date,duration,origin,destination,price,max_capacity):
         self.code = code
         self.company = company
         self.date = date 
@@ -7,16 +7,13 @@ class Flight:
         self.origin = origin
         self.destination = destination
         self.price = price
-        self.available = available
+        self.max_capacity = max_capacity
     
     def get_duration(self):
         return self.duration
 
     def get_price(self):
         return self.price
-    
-    def is_available(self):
-        return self.available
-    
+
     def __repr__(self):
-        return f"Flight({self.code,self.company,self.date,self.duration,self.origin,self.destination,self.price,self.available})"
+        return f"Flight({self.code,self.company,self.date,self.duration,self.origin,self.destination,self.price,self.max_capacity})"

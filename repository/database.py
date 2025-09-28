@@ -6,6 +6,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from models.destination import Destination
 from models.flight import Flight
 from models.accomodation import Acommodation
+from datetime import datetime
+
 
 # Create Tables 
 def create_tables():
@@ -270,7 +272,7 @@ def user_budget(user_name,user_email):
     
 
 # Find
-def find_accommodation(location,start_date,end_date):
+def find_accommodation(location,start_date,end_date,budget):
     conn = sqlite3.connect('info.db')
     c = conn.cursor()
     
@@ -279,20 +281,21 @@ def find_accommodation(location,start_date,end_date):
 
     c.execute("""SELECT a.name,a.type,a.price,a.rating,a.location
               FROM accommodations a
-              WHERE LOWER(location) = LOWER(?)
+              WHERE LOWER(a.location) = LOWER(?) AND a.price <= ?
               AND NOT EXISTS (SELECT * FROM bdb.booked_accommodations b
-                            WHERE b.name = a.name
-                            AND NOT (? < b.ini_date OR ? > b.fin_date))""",(location,end_date,start_date))
+                            WHERE b.name = a.name 
+                            AND NOT (? < b.ini_date OR ? > b.fin_date))""",(location,budget,end_date,start_date))
     rows = c.fetchall()
     conn.commit()
     conn.close()
     return[Acommodation(*row) for row in rows]
 
-def find_flight(city_dest,city_org,date):
+def find_flight(city_dest,city_org,budget):
     conn = sqlite3.connect('info.db')
     c = conn.cursor()
     c.execute("""SELECT code,company,date,duration,origin,destination,price,max_capacity 
-              FROM flights WHERE LOWER(destination) = LOWER(?) AND LOWER(origin) = LOWER(?) and date = ?""",(city_dest,city_org,date))
+              FROM flights WHERE LOWER(destination) = LOWER(?) AND price <= ? 
+              AND LOWER(origin) = LOWER(?)""",(city_dest,budget,city_org))
     rows = c.fetchall()
     flights = [Flight(*row) for row in rows]
     conn.commit()

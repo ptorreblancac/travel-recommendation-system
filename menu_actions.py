@@ -21,12 +21,15 @@ months = {
 
 # Sort
 def sort_by_time(options):
+    """"Sorts by flight duration"""
     return sorted(options, key=lambda f: f.duration)
 
 def sort_by_price(options):
+    """Sorts by price"""
     return sorted(options, key=lambda f: f.price)
 
 def sort_by_rank(options):
+    """Sort accommodations by rating"""
     return sorted(options, key=lambda f: f.rating, reverse=True)
 
 def smart_sort(options,type):
@@ -89,13 +92,22 @@ def book_flight(user): # TO DO: sort by departure hours
     print("(1)Select flexible dates.")
     print("(2)Select exact dates.")
 
-    if int(input("Pick your date selection method: ")) == 1:
-        month = months[(input("Choose the traveling month: ")).lower()]
-        options = [f for f in all_flights if datetime.strptime(f.date, "%Y-%m-%d").month == month]
-    else:
-        date = transform_date_format(input("Enter date of flight: "))
-        options = [f for f in all_flights if f.date == date]
-
+    while True:
+        try:
+            date_selection = int(input("Pick your date selection method: "))
+            if date_selection == 1:
+                month = months[(input("Choose the traveling month: ")).lower()]
+                options = [f for f in all_flights if datetime.strptime(f.date, "%Y-%m-%d").month == month]
+                break
+            elif date_selection == 2:
+                date = transform_date_format(input("Enter date of flight: "))
+                options = [f for f in all_flights if f.date == date]
+                break
+            else:
+                print("Please choose a valid number.")
+        except ValueError:
+            print("Please select a valid option.")
+    
     # Allow users to sort results
     sorting_selected = input("Sort results [Y/N]")
     if sorting_selected in ('y','Y'):
@@ -103,14 +115,23 @@ def book_flight(user): # TO DO: sort by departure hours
         print("2. Cheapest option first.")
         print("3. Best value for money.")
 
-        sort_choice = int(input("Select option: "))
-        if sort_choice == 1:
-            options = sort_by_time(options)
-        elif sort_choice == 2:
-            options = sort_by_price(options)
-        else:
-            options = smart_sort(options,"flight")
-        
+        while True:
+            try:
+                sort_choice = int(input("Select option: "))
+                if sort_choice == 1:
+                    options = sort_by_time(options)
+                    break
+                elif sort_choice == 2:
+                    options = sort_by_price(options)
+                    break
+                elif sort_choice == 3:
+                    options = smart_sort(options,"flight")
+                    break
+                else:
+                    print("Please select a valid number.")
+            except ValueError:
+                print("Please select a valid option.")
+            
     if len(options) != 0:
         print(f"Flights from {str.capitalize(city_org)} to {str.capitalize(city_dest)}:")
         for i,opt in enumerate(options):
@@ -141,14 +162,23 @@ def book_accommodation(user):
         print("2. Cheapest option first.")
         print("3. Best value for money.")
 
-        sort_choice = int(input("Select option: "))
-        if sort_choice == 1:
-            options = sort_by_rank(options)
-        elif sort_choice == 2:
-            options = sort_by_price(options)
-        else:
-            options = smart_sort(options,"accommodation")
-    
+        while True:
+            try:
+                sort_choice = int(input("Select option: "))
+                if sort_choice == 1:
+                    options = sort_by_rank(options)
+                    break
+                elif sort_choice == 2:
+                    options = sort_by_price(options)
+                    break
+                elif sort_choice == 3:
+                    options = smart_sort(options,"accommodation")
+                    break
+                else:
+                    print("Please select a valid number.")
+            except ValueError:
+                print("Please select a valid option")
+                
     if len(options) != 0:
         for i,opt in enumerate(options):
             print(f"{i+1}. Accommodation Name: {opt.name}, Type: {opt.type},")

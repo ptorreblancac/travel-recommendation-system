@@ -47,35 +47,4 @@ class User:
         self.budget = new_budget
         print(f"The budget has been updated successfully to {self.budget}!\n")
         return True
-    
-    def get_preferences(self):
-        try:
-            print("List of destinations:")
-            for country,destinations in self.preferred_destinations.items():
-                for destination in destinations:
-                    print(f"{destination.name}, {country}")
-        except AttributeError:
-            print("-\n")
-    
-    def get_flights(self):
-        if len(self.booked_flights) == 0:
-            print(f"The user {self.name} currently has no booked flights\n")
-        else:
-            for row in self.booked_flights:
-                print(f"Flight Code: {row.code}, Company: {row.company}, Date: {row.date}, Duration: {row.duration}h")
-                print(f"From: {row.origin} To: {row.destination}, Price: {row.price}€, Max capacity: {row.max_capacity}")
-                print("-" * 40)            
-
-    def get_accommodations(self):
-        if len(self.booked_accommodations) == 0:
-            print(f"The user {self.name} currently has no booked accommodations\n")
-        else:
-            for row in self.booked_accommodations:
-                print(f"Accommodation Name: {row.name}, Accommodation Type: {row.type}, Price: {row.price}€")
-                print(f"Rating: {row.rating}, Location: {row.location}")
-                print("-" * 40)
-
-
- 
-
 

@@ -6,8 +6,8 @@ def option1(user): act.select_new_destination(user)
 def option2(user): act.book_flight(user)
 def option3(user): act.book_accommodation(user)
 def option4(user): act.select_budget(user)
-def option5(user): user.get_preferences()
-def option6(user): user.get_flights()
+def option5(user): db.get_preferences(user)
+def option6(user): db.get_flights(user)
 def option7(user): db.get_accommodations(user)
 def option8(user): print(user.budget)
 
@@ -24,7 +24,7 @@ options = {
 
 def main():
     user = act.initialize()
-    atexit.register(db.update_budget,user) # Ensures budget persistence
+    atexit.register(db.set_new_budget,user,user.budget) # Ensures budget persistence
 
     while True:
         act.print_options()

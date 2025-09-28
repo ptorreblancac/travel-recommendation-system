@@ -8,9 +8,9 @@ from models.flight import Flight
 from models.accomodation import Acommodation
 from datetime import datetime
 
-
 # Create Tables 
 def create_tables():
+    """Creates databases for persistence"""
     # Open connection to info file
     conn = sqlite3.connect('info.db')
     c = conn.cursor()
@@ -101,6 +101,7 @@ def create_tables():
 
 # Add new user, booking or preference
 def add_user(user):
+    """Adds a new user into the database"""
     conn = sqlite3.connect('info.db')
     c = conn.cursor()
     c.execute("INSERT INTO users VALUES (?,?,?)",
@@ -109,6 +110,7 @@ def add_user(user):
     conn.close()
 
 def add_flight_booking(user,flight,current_date):
+    """Adds a new flight booking into the database"""
     conn = sqlite3.connect('bookings.db')
     c = conn.cursor()
     current_capacity = show_capacity(flight.code)
@@ -128,6 +130,7 @@ def add_flight_booking(user,flight,current_date):
     return booked 
 
 def add_accommodation_booking(user,acc,ini_date,end_date,booking_time):
+    """Adds a new accommodation booking into the database"""
     conn = sqlite3.connect('bookings.db')
     c = conn.cursor()
     c.execute("INSERT INTO booked_accommodations VALUES (?,?,?,?,?,?,?,?,?)",
@@ -137,6 +140,7 @@ def add_accommodation_booking(user,acc,ini_date,end_date,booking_time):
     conn.close()
 
 def add_liked_destination(user,dest):
+    """Adds a new destination preference into the database"""
     conn = sqlite3.connect('bookings.db')
     c = conn.cursor()
     c.execute("INSERT INTO liked_destinations VALUES (?,?,?,?)",
@@ -147,6 +151,7 @@ def add_liked_destination(user,dest):
 
 # Check
 def destination_not_on_list(user,dest):
+    """Checks if a destination is on the list"""
     conn = sqlite3.connect('bookings.db')
     c = conn.cursor()
     c.execute("SELECT * FROM liked_destinations WHERE LOWER(user) = LOWER(?) AND LOWER(name) = LOWER(?)",(user.email,dest.name))
@@ -156,6 +161,7 @@ def destination_not_on_list(user,dest):
     return result is None
 
 def user_found(user_name,user_email):
+    """Checks whether or not a user is in the database"""
     conn = sqlite3.connect('info.db')
     c = conn.cursor()
     c.execute("SELECT * FROM users WHERE name = ? AND email = ?",(user_name,user_email))
@@ -168,8 +174,10 @@ def user_found(user_name,user_email):
     else:
         return True
 
+
 # Loading into info.db
 def add_destination(dest):
+    """Adds a new destination into the database"""
     conn = sqlite3.connect('info.db')
     c = conn.cursor()
     c.execute("INSERT INTO destinations VALUES (?,?,?)",
@@ -178,6 +186,7 @@ def add_destination(dest):
     conn.close()
 
 def add_flight(flight):
+    """Adds a new flight into the database"""
     conn = sqlite3.connect('info.db')
     c = conn.cursor()
     c.execute("INSERT OR IGNORE INTO flights VALUES (?,?,?,?,?,?,?,?,?)",
@@ -187,6 +196,7 @@ def add_flight(flight):
     conn.close()
 
 def add_accommodation(acc):
+    """Adds a new accommodation into the database"""
     conn = sqlite3.connect('info.db')
     c = conn.cursor()
     c.execute("INSERT OR IGNORE INTO accommodations VALUES (?,?,?,?,?)",
@@ -197,6 +207,7 @@ def add_accommodation(acc):
 
 # Loading into bookings.db
 def load_booked_flights(user):
+    """Loads booked flights into the database"""
     conn = sqlite3.connect('bookings.db')
     c = conn.cursor()
     c.execute("""SELECT code,company,date,duration,origin,destination,price,max_capacity
@@ -207,6 +218,7 @@ def load_booked_flights(user):
     return [Flight(*row) for row in rows] if rows else []
 
 def load_booked_accommodations(user):
+    """Loads booked accommodations into the database"""
     conn = sqlite3.connect('bookings.db')
     c = conn.cursor()
     c.execute("SELECT name,type,price,rating,location FROM booked_accommodations WHERE user = ?", (user.email,))
@@ -216,6 +228,7 @@ def load_booked_accommodations(user):
     return [Acommodation(*row) for row in rows] if rows else []
 
 def load_liked_destinations(user):
+    """Loads liked destinations into the database"""
     conn = sqlite3.connect('bookings.db')
     c = conn.cursor()
     c.execute("SELECT name,temperature,country FROM liked_destinations WHERE user = ?", (user.email,))
@@ -232,6 +245,7 @@ def load_liked_destinations(user):
 
 # Show
 def show_capacity(code):
+    """Returns capacity for a given flight"""
     conn = sqlite3.connect('info.db')
     c = conn.cursor()
     c.execute("SELECT current_capacity FROM flights WHERE code == ?",(code,))
@@ -240,24 +254,52 @@ def show_capacity(code):
     conn.close()
     return capacity
 
-def show_booked_accommodations(user):
+def get_accommodations(user):
+    """Prints all accommodation information for a given user"""
     conn = sqlite3.connect('bookings.db')
     c = conn.cursor()
-    c.execute("SELECT * FROM booked_accommodations WHERE user = ?",(user.name,))
-    
+    c.execute("SELECT * FROM booked_accommodations WHERE user = ?",(user.email,))
     rows = c.fetchall()
-    if rows:
-        for row in rows:
-            print(f"Accommodation Name: {row[1]}, Type: {row[2]}, Price: ${row[3]}, Rating: {row[4]}/5")
-            print(f"Location: {row[5]}, Start Date: {row[6]}, End Date: {row[7]}, Booking Time: {row[8]}")
-            print("-" * 50)
-    else:
-        print("No booked accommodations found.")
-
+    print("-" * 40)
+    for row in rows:
+        print(f"Accommodation Name: {row[1]}, Accommodation Type: {row[2]}, Price: {row[3]}€")
+        print(f"Rating: {row[4]}, Location: {row[5]}, Start Date: {row[6]}, End Date: {row[7]}")
+        print("-" * 40)
     conn.commit()
     conn.close()
 
+def get_flights(user):
+    """Prints all flight information for a given user"""
+    conn = sqlite3.connect('bookings.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM booked_flights WHERE user = ?",(user.email,))
+    rows = c.fetchall()
+    print("-" * 40)
+    for row in rows:
+        print(f"Flight Code: {row[1]}, Company: {row[2]}, Date: {row[3]}, Duration: {row[4]}h")
+        print(f"From: {row[5]} To: {row[6]}, Price: {row[7]}€")
+        print("-" * 40)
+    conn.commit()
+    conn.close()   
+
+def get_preferences(user):
+    """Prints all destination information for a given user"""
+    conn = sqlite3.connect('bookings.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM liked_destinations WHERE user = ?",(user.email,))
+    rows = c.fetchall()
+    if rows is None:
+        print("-\n")
+    else:
+        print("-" * 40)
+        for row in rows:
+            print(f"{row[1]}, {row[3]}")
+            print("-" * 40)
+    conn.commit()
+    conn.close()  
+
 def user_budget(user_name,user_email):
+    """Returns budget for a given user"""
     conn = sqlite3.connect('info.db')
     c = conn.cursor()
     c.execute("SELECT budget FROM users WHERE name = ? AND email = ?",(user_name,user_email))
@@ -273,6 +315,7 @@ def user_budget(user_name,user_email):
 
 # Find
 def find_accommodation(location,start_date,end_date,budget):
+    """Returns all accommodations in a location, whithin given dates and within budget"""
     conn = sqlite3.connect('info.db')
     c = conn.cursor()
     
@@ -291,6 +334,7 @@ def find_accommodation(location,start_date,end_date,budget):
     return[Acommodation(*row) for row in rows]
 
 def find_flight(city_dest,city_org,budget):
+    """Returns all flights with common origin and destination and within budget"""
     conn = sqlite3.connect('info.db')
     c = conn.cursor()
     c.execute("""SELECT code,company,date,duration,origin,destination,price,max_capacity 
@@ -303,6 +347,7 @@ def find_flight(city_dest,city_org,budget):
     return flights
 
 def find_destination(dest):
+    """Returns destination"""
     conn = sqlite3.connect('info.db')
     c = conn.cursor()
     c.execute("SELECT name,temperature,country FROM destinations WHERE LOWER(name) = LOWER(?)",(dest,))
@@ -317,20 +362,15 @@ def find_destination(dest):
 
 # Update
 def set_new_budget(user,new_budget):
+    """Updates a given user's budget to the new_budget"""
     conn = sqlite3.connect('info.db')
     c = conn.cursor()
     c.execute("UPDATE users SET budget = ? WHERE email = ?",(new_budget,user.email))
     conn.commit()
     conn.close()
 
-def update_budget(user):
-    conn = sqlite3.connect('info.db')
-    c = conn.cursor()
-    c.execute("UPDATE users SET budget = ? WHERE email = ?",(user.budget,user.email))
-    conn.commit()
-    conn.close()
-
 def modify_flight_capacity(code,new_capacity):
+    """Modifies flight (with code) capacity to the new number """
     conn = sqlite3.connect('info.db')
     c = conn.cursor()
     c.execute("""UPDATE flights SET current_capacity = ? 
@@ -340,18 +380,6 @@ def modify_flight_capacity(code,new_capacity):
     conn.close()
     return True
 
-# Print info
-def get_accommodations(user):
-    conn = sqlite3.connect('bookings.db')
-    c = conn.cursor()
-    c.execute("SELECT * FROM booked_accommodations WHERE user = ?",(user.email,))
-    rows = c.fetchall()
-    for row in rows:
-        print(f"Accommodation Name: {row[1]}, Accommodation Type: {row[2]}, Price: {row[3]}€")
-        print(f"Rating: {row[4]}, Location: {row[5]}, Start Date: {row[6]}, End Date: {row[7]}")
-        print("-" * 40)
-    conn.commit()
-    conn.close()
 
 if __name__ == "__main__":
     create_tables()
